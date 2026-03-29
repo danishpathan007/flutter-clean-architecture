@@ -5,6 +5,7 @@
 pubspec.lock
 
 # IDE
+.idea/
 *.iml
 .vscode/
 
@@ -13,4 +14,3 @@ pubspec.lock
 
 # Build
 build/
-
