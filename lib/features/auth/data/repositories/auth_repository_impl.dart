@@ -3,14 +3,15 @@ import '../../domain/repositories/auth_repository.dart';
 import '../datasources/auth_remote_datasource.dart';
 import '../models/user_model.dart';
 
-class AuthRepositoryImpl implements AuthRepository {
-  const AuthRepositoryImpl(this.remoteDataSource);
 
+class AuthRepositoryImpl implements AuthRepository {
   final AuthRemoteDataSource remoteDataSource;
 
+  AuthRepositoryImpl(this.remoteDataSource);
+
   @override
-  Future<User> login() async {
-    final json = await remoteDataSource.login();
+  Future<User> login(String email, String password) async {
+    final json = await remoteDataSource.login(email, password);
     return UserModel.fromJson(json);
   }
 }

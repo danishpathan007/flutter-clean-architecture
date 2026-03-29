@@ -1,3 +1,4 @@
 abstract class AuthRemoteDataSource {
-  Future<Map<String, dynamic>> login();
+  Future<Map<String, dynamic>> login(String email, String password);
 }
+
