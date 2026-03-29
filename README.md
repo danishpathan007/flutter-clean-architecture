@@ -34,27 +34,14 @@ This project follows 3 layers:
 
 ## 📂 Folder Structure
 
-```
+``` 
 lib/
  ┣ core/
- ┃ ┣ error/
- ┃ ┣ network/
- ┃ ┗ utils/
  ┣ features/
  ┃ ┗ auth/
  ┃   ┣ data/
- ┃   ┃ ┣ datasources/
- ┃   ┃ ┣ models/
- ┃   ┃ ┗ repositories/
  ┃   ┣ domain/
- ┃   ┃ ┣ entities/
- ┃   ┃ ┣ repositories/
- ┃   ┃ ┗ usecases/
  ┃   ┗ presentation/
- ┃     ┣ bloc/
- ┃     ┣ pages/
- ┃     ┗ widgets/
- ┗ main.dart
 ```
 
 ---
@@ -72,4 +59,3 @@ This project is created to demonstrate how to structure Flutter apps for scalabi
 * Maintainable architecture
 
 ---
-
