@@ -3,11 +3,10 @@ import '../../domain/repositories/auth_repository.dart';
 import '../datasources/auth_remote_datasource.dart';
 import '../models/user_model.dart';
 
-
 class AuthRepositoryImpl implements AuthRepository {
-  final AuthRemoteDataSource remoteDataSource;
+  const AuthRepositoryImpl(this.remoteDataSource);
 
-  AuthRepositoryImpl(this.remoteDataSource);
+  final AuthRemoteDataSource remoteDataSource;
 
   @override
   Future<User> login(String email, String password) async {

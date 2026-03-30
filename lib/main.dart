@@ -1,24 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_clean_architecture/features/auth/presentation/pages/login_page.dart';
-import 'core/di/injection.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import 'features/auth/presentation/pages/login_page.dart';
 
 void main() {
-  init();
-  runApp(MyApp());
+  runApp(const ProviderScope(child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Flutter Clean Architecture',
       theme: ThemeData(
-        colorScheme: .fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF1E5EFF)),
+        useMaterial3: true,
       ),
       home: LoginPage(),
     );
   }
 }
-

@@ -1,76 +1,112 @@
 import 'package:flutter/material.dart';
-import '../../../../core/di/injection.dart';
-import '../../domain/usecases/login_usecase.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class LoginPage extends StatelessWidget {
-  final emailController = TextEditingController();
-  final passwordController = TextEditingController();
+import '../../../../core/utils/app_loader.dart';
+import '../../../../core/utils/app_toast.dart';
+import '../../../../core/widgets/app_button.dart';
+import '../../../../core/widgets/app_textfield.dart';
+import '../providers/auth_provider.dart';
+
+class LoginPage extends ConsumerWidget {
+  LoginPage({super.key});
+
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
   @override
-  Widget build(BuildContext context) {
-    final loginUseCase = sl<LoginUseCase>();
+  Widget build(BuildContext context, WidgetRef ref) {
+    final authState = ref.watch(authNotifierProvider);
+
+    ref.listen<AsyncValue>(authNotifierProvider, (previous, next) {
+      if (next.isLoading) {
+        AppLoader.show(context);
+        return;
+      }
+
+      AppLoader.hide();
+
+      next.whenOrNull(
+        data: (user) {
+          if (user != null) {
+            AppToast.showSuccess(context, 'Welcome ${user.email}');
+          }
+        },
+        error: (error, _) {
+          AppToast.showError(context, error.toString());
+        },
+      );
+    });
+
+    final isLoading = authState.isLoading;
 
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              "Welcome Back 👋",
-              style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
-            ),
-
-            SizedBox(height: 30),
-
-            TextField(
-              controller: emailController,
-              decoration: InputDecoration(
-                labelText: "Email",
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0xFFEEF4FF), Color(0xFFDCE9FF)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+        ),
+        child: Center(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(20),
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 420),
+              child: Card(
+                elevation: 6,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(22),
                 ),
-              ),
-            ),
-
-            SizedBox(height: 15),
-
-            TextField(
-              controller: passwordController,
-              obscureText: true,
-              decoration: InputDecoration(
-                labelText: "Password",
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-            ),
-
-            SizedBox(height: 25),
-
-            SizedBox(
-              width: double.infinity,
-              height: 50,
-              child: ElevatedButton(
-                onPressed: () async {
-                  final user = await loginUseCase(
-                    emailController.text,
-                    passwordController.text,
-                  );
-
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text("Welcome ${user.email}")),
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+                child: Padding(
+                  padding: const EdgeInsets.all(24),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Sign in',
+                        style: TextStyle(
+                          fontSize: 28,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        'Use test@test.com / 123456 for mock login',
+                        style: TextStyle(
+                          color: Colors.grey.shade600,
+                        ),
+                      ),
+                      const SizedBox(height: 22),
+                      AppTextField(
+                        label: 'Email',
+                        keyboardType: TextInputType.emailAddress,
+                        controller: _emailController,
+                      ),
+                      const SizedBox(height: 14),
+                      AppTextField(
+                        label: 'Password',
+                        obscureText: true,
+                        controller: _passwordController,
+                      ),
+                      const SizedBox(height: 22),
+                      AppButton(
+                        label: 'Login',
+                        isLoading: isLoading,
+                        onPressed: () {
+                          ref.read(authNotifierProvider.notifier).login(
+                                _emailController.text,
+                                _passwordController.text,
+                              );
+                        },
+                      ),
+                    ],
                   ),
                 ),
-                child: Text("Login"),
               ),
             ),
-          ],
+          ),
         ),
       ),
     );
